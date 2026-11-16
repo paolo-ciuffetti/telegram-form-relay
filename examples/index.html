@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Telegram Form Relay Example</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .form-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { margin-top: 0; color: #333; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem; }
+        input, textarea { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        button { background: #0070f3; color: white; border: none; padding: 0.75rem 1rem; width: 100%; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #0051a2; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #response-message { margin-top: 1rem; font-size: 0.9rem; text-align: center; }
+        .success { color: #2e7d32; }
+        .error { color: #c62828; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Contact Us</h2>
+    <form id="contact-form">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" id="submit-btn">Send Message</button>
+    </form>
+    <div id="response-message"></div>
+</div>
+
+<script>
+    // Replace with your deployed Vercel endpoint URL
+    const API_ENDPOINT = 'https://your-project.vercel.app/api/send-notification';
+
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const responseDiv = document.getElementById('response-message');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        responseDiv.textContent = '';
+        responseDiv.className = '';
+
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                responseDiv.textContent = result.message || 'Message sent successfully!';
+                responseDiv.className = 'success';
+                form.reset();
+            } else {
+                responseDiv.textContent = result.error || 'Failed to send message.';
+                responseDiv.className = 'error';
+            }
+        } catch (err) {
+            responseDiv.textContent = 'Network error. Please try again later.';
+            responseDiv.className = 'error';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
+        }
+    });
+</script>
+
+</body>
+</html>

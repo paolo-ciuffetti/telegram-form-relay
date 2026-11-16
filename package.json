@@ -1,0 +1,22 @@
+{
+  "name": "telegram-form-relay",
+  "version": "0.1.0",
+  "description": "Lightweight serverless webhook to forward web form submissions to Telegram with Upstash Redis rate limiting.",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "keywords": [
+    "telegram",
+    "webhook",
+    "contact-form",
+    "serverless",
+    "vercel",
+    "upstash",
+    "redis"
+  ],
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@upstash/redis": "^1.34.0"
+  }
+}
